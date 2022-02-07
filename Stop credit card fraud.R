@@ -1,8 +1,8 @@
 #Stop credit card fraud: Implement the concept of a simple anti-fraud.
 
-#For the classification of transactions into fraudulent and non fraudulent,
-#I choose the classification method known as Logistic Regression wich belongs
-#to the Generalized Linear Models (GLM) family. 
+#For the classification of transactions into fraudulous and non fraudulous ones,
+
+#I choose the classification method known as Logistic Regression wich belongs to the Generalized Linear Models (GLM) family. 
 #I have chosen this model since the binary outcome of chargeback variable.
 
 #Libraries#
@@ -16,7 +16,8 @@ library(ROCR)
 transactional_sample_ud=transactional.sample[,-4]
 str(transactional_sample_ud)
 
-#First, i'm going to show, through some graphics, the relationship between the chargebacks variable and two potentially "good" predictors : transaction_date and transaction_amount
+#First, i'm going to show, through some graphics, the relationship between the chargebacks variable and two potentially "good" predictors : 
+#transaction_date and transaction_amount
 
 par(mfrow=c(2,2))
 plot(has_cbk~transaction_date,data=transactional_sample_ud,xlab="transaction_date",ylab = "has_cbk")
