@@ -39,7 +39,8 @@ print(summary(transactional.sample))
 #Device_id has 830 NA, lets take a look on these lines
 no_device_id=transactional.sample[rowSums(is.na(transactional.sample)) > 0, ]
 print(summary(no_device_id)) 
-#Only 67 transactions out of 830 had chargebacks, So  the fact that a device does not have an ID has nothing to do with chargeback 
+
+#First conclusion : Only 67 transactions out of 830 had chargebacks, So  the fact that a device does not have an ID has nothing to do with chargebacks 
 
 #replacing na in device id with 0s
 transactional.sample[is.na(transactional.sample)] <- 0
@@ -51,11 +52,12 @@ ggplot(transactional.sample, aes(x=transaction_date, y=transaction_amount, color
   geom_point(size=2) +
   theme_ipsum()
 
-#We can see that the more we go through time the more we have transactions
-#We can also see that we the more we have transactions, the more we have chargebacks
-#Finally, we can see that higher amounts are more likely to have chargebacks, so let's see the correlation between this two variables
+#Second conclusion : 
+#We can see that the more we go through time the more we have transactions.
+#We can also see that the more we have transactions, the more we have chargebacks
+#Finally, we can see that higher amounts are more likely to have chargebacks, so let's take a look at correlations.
 
-#transform has-cbk to numeric
+#transforming has-cbk to numeric
 transactional.sample <- transactional.sample %>% mutate(has_cbk = as.numeric(has_cbk))
 str(transactional.sample)
 
@@ -65,14 +67,15 @@ str(transactional.sample)
 #only numeric database
 num_transaction_df=transactional.sample[,-(4:5)]
 str(num_transaction_df)
-view(num_transaction_df)
 num_transaction_df=num_transaction_df[,-1]
 
 
 mcor <- cor(num_transaction_df)
 mcor
 corrplot(mcor, type="upper", order="hclust", tl.col="black", tl.srt=45)
-#We can see a positive correlation between transaction amount and chargebacks, wich means that the more the amount of a transcation is high, the more likely a chargeback happens
+
+#Third conclusion : 
+#We can see a positive correlation between transaction amount and chargebacks, wich means transactions with high amounts are more likely to have chargebacks
 
 #2- Clustering with kmeans()
 
@@ -95,24 +98,25 @@ for (k in 2:10){
 #graphique
 plot(1:10,inertie.expl,type="b",xlab="Number of groups",ylab="% inertia explained")
 
-#From k = 2 classes (maybe 3),the addition of an extra group does not "significantly' increase the share of inertia explained by the partition. 
-
+#Fourth conclusion : From k = 2 classes (maybe 3),the addition of an extra group does not "significantly' increase the share of inertia explained by the partition. 
+#We can make 2 clusters for our transactions, interpretation of the two clusters : fraudulous and not fraudulous
 
 #3-Focus on lines with chargebacks
 transactions_with_cbks = transactional.sample[transactional.sample$has_cbk==1,] 
 
 #frequency of chargebacks for merchants 
 merchants=table(transactions_with_cbks$merchant_id)
-barplot(merchants)                                     # Draw frequency table
+barplot(merchants)                                    
 
-#We  can see that some merchants has more chargebacks than others
-#Knowing that card associantions like Visa and Mastercards, consider merchants having more than 1% of their transactions in chargebacks are risky
+#Fifth conclusion : We  can see that some merchants has more chargebacks than others.
+#Card associantions like Visa and Mastercards, consider merchants having more than 1% of their transactions in chargebacks are risky.
+#Based on this information, we can detect many risky merchants and potentielly fraudulent 
 
 #frequency of chargebacks for users 
 users=table(transactions_with_cbks$user_id)
-barplot(users)                                     # Draw frequency table
+barplot(users)                                   
 
-#As well for users, We  can see that some users has more chargebacks than others wich is suspicious
+#Sixth conclusion : We  can see that some users has more chargebacks than others wich is suspicious too.
 
 #For example, the device_id 486 had 4 chargebacks for different amounts for the same user 81152 and the same merchant 56107
 
@@ -128,8 +132,8 @@ view(all_transactions)
 
 #II. In addition to the spreadsheet data, what other data would you look at to 
 #try to find patterns of possible frauds?
-
-#I would look to the card’s country/city of issue and its previous payment history. I will also look for the history of chargbacks for both, merchants and customers.
+#Answer :
+#I would look to the card’s country/city of issue and its previous payment history. I will also look for the history of chargbacks for both, merchants and users.
 
 
 
