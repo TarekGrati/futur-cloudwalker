@@ -129,7 +129,7 @@ view(all_transactions)
 #II. In addition to the spreadsheet data, what other data would you look at to 
 #try to find patterns of possible frauds?
 
-#I would look to the card’s country/city of issue and its previous payment history
+#I would look to the card’s country/city of issue and its previous payment history. I will also look for the history of chargbacks for both, merchants and customers.
 
 
 
